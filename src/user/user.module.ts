@@ -6,12 +6,14 @@ import { UserSchema } from "../schemas/user.schema";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "../auth/constants";
 import { AuthGuard } from "../auth/auth.guard";
+import { AboutSchema } from "../schemas/about.schema";
 
 @Module({
-  imports:[MongooseModule.forFeature([
+  imports:[
+    MongooseModule.forFeature([
     {
-      name:"User",
-      schema:UserSchema
+      name:"About",
+      schema:AboutSchema
     }
   ]),
     JwtModule.register({

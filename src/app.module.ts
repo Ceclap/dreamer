@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { getMongoConfig } from "./configs/mongo.config";
 import { MailModule } from './mail/mail.module';
 import { UserModule } from './user/user.module';
+import { DreamsModule } from './dreams/dreams.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { UserModule } from './user/user.module';
       useFactory:getMongoConfig
     }),
     MailModule,
-    UserModule
+    UserModule,
+    DreamsModule
 
   ],
   controllers: [AppController],

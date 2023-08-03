@@ -14,25 +14,25 @@ export class About extends Document{
   lastName: string;
 
   @Prop()
-  birthDate: Date;
+  birthDate: string;
 
   @Prop()
-  gender: String;
+  gender: string;
 
   @Prop({require: true ,unique: true})
-  email: String
+  email: string
 
   @Prop()
-  phoneNumber: String
+  phoneNumber: string
 
   @Prop()
-  country: String
+  country: string
 
   @Prop()
-  city: String
+  city: string
 
   @Prop()
-  description: String
+  description: string
 
 }
 
