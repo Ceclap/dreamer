@@ -7,14 +7,16 @@ import { ConfigService } from "@nestjs/config";
 import { MailService } from "../mail/mail.service";
 import { JwtService } from "@nestjs/jwt";
 import { jwtConstants } from "./constants";
+import { About } from "../schemas/about.schema";
 
 @Injectable()
 export class AuthService {
 
 	constructor(
 		@InjectModel('User') private readonly UserModel: Model<User>,
+		@InjectModel('About') private readonly AboutModel: Model<About>,
+
 		private readonly mailService: MailService,
-		private readonly configService: ConfigService,
 		private jwtService: JwtService
 	) {}
   async singUp(body) {
@@ -59,7 +61,14 @@ export class AuthService {
 			passwordHash: payload.hash
 		});
 
-		await doc.save();
+		user = await doc.save();
+
+		const about = new this.AboutModel({
+			creator: user._id,
+			email: user.email,
+		});
+
+		await about.save()
 		console.log("All good");
 		res.redirect(`http://localhost:5173/success`)
 	}
@@ -85,4 +94,37 @@ export class AuthService {
 		}
 		return JSON.stringify(respons)
 	}
+	async recoverEmail(body){
+		const email = body.email;
+		const user = await this.UserModel.findOne({ email: email });
+		if (!user) {
+			throw new NotFoundException('User was not found');
+		}
+		const respons = {
+			message: "succes",
+			email: email,
+		};
+		await this.mailService.sendUserConfirmation(email, "Dreams Recover Password", `Hey Dreamer, To recover your password, click here: link`);
+		return JSON.stringify(respons)
+	}
+	async recover(body){
+		try {
+			const email = body.email;
+			const new_password = body.password;
+			const salt = await bcrypt.genSalt(10);
+			const hash = await bcrypt.hash(new_password, salt);
+			await this.UserModel.updateOne({email:email}, {passwordHash: hash}).exec()
+			const respons = {
+				message: "succes",
+				email: email,
+			};
+			return JSON.stringify(respons)
+		}
+		catch (e)
+		{
+			console.log(e);
+		}
+
+	}
+
 }
