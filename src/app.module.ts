@@ -8,6 +8,7 @@ import { getMongoConfig } from "./configs/mongo.config";
 import { MailModule } from './mail/mail.module';
 import { UserModule } from './user/user.module';
 import { DreamsModule } from './dreams/dreams.module';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { DreamsModule } from './dreams/dreams.module';
     }),
     MailModule,
     UserModule,
-    DreamsModule
+    DreamsModule,
+    ImagesModule
 
   ],
   controllers: [AppController],

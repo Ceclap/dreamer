@@ -6,14 +6,14 @@ import { UserSchema } from "../schemas/user.schema";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "../auth/constants";
 import { AuthGuard } from "../auth/auth.guard";
-import { AboutSchema } from "../schemas/about.schema";
+import { ImagesService } from "../images/images.service";
 
 @Module({
   imports:[
     MongooseModule.forFeature([
     {
-      name:"About",
-      schema:AboutSchema
+      name:"User",
+      schema:UserSchema
     }
   ]),
     JwtModule.register({
@@ -22,6 +22,6 @@ import { AboutSchema } from "../schemas/about.schema";
     })
   ],
   controllers: [UserController],
-  providers: [UserService,AuthGuard]
+  providers: [UserService, AuthGuard, ImagesService]
 })
 export class UserModule {}

@@ -1,23 +1,47 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { About } from "../schemas/about.schema";
+import { User } from "../schemas/user.schema";
+import { InjectMinio } from "nestjs-minio";
+import { Client } from "minio";
+import { readableStreamLikeToAsyncGenerator } from "rxjs/internal/util/isReadableStreamLike";
+import { DreamsService } from "../dreams/dreams.service";
+import { ImagesService } from "../images/images.service";
+import { logger } from "@typegoose/typegoose/lib/logSettings";
 
 @Injectable()
 export class UserService {
 
   constructor(
-    @InjectModel('About') private readonly AboutModel:Model<About>,
+    private readonly imagesService:ImagesService,
+    @InjectMinio() private readonly minioClient: Client,
+    @InjectModel('User') private readonly UserModel:Model<User>,
     ){}
-  async modify(req,body){
+  async modify(req,body,files){
     try {
       const id = req.user.id;
-      const about = await this.AboutModel.findOne({ creator: id });
+      const about = await this.UserModel.findById(id);
       if (!about) {
         throw new NotFoundException('User was not found');
       }
-
-      await this.AboutModel.updateMany({ creator: id },
+      if(!files)
+      {
+        console.log('Images was not found');
+      }
+      else{
+        const images = this.imagesService.upload(files)
+        images.then(images => {
+          images.map(async (image) => {
+            if (image.fieldname === 'avatar') {
+              await this.UserModel.updateOne({ _id: id }, { avatar: image.fileName })
+            }
+            if (image.fieldname === 'background') {
+              await this.UserModel.updateOne({ _id: id }, { background: image.fileName })
+            }
+          })
+        })
+      }
+      await this.UserModel.findByIdAndUpdate(id,
         {
           firstName:body.firstName,
           lastName:body.lastName,
@@ -31,7 +55,7 @@ export class UserService {
 
       const respons = {
         message: "succes",
-        about_id: about._id,
+        id: about._id,
       }
 
       return JSON.stringify(respons)
@@ -42,25 +66,14 @@ export class UserService {
   }
   async get(req){
     try{
-      const id = req.user.id
-      console.log(id);
-      const user = await this.AboutModel.findOne({ creator: id }).exec();
+      let id = req.params.id
+      if(!id)
+        id= req.user.id
+      const user = await this.UserModel.findById(id).exec();
       if (!user) {
         throw new NotFoundException('User was not found');
       }
-      return user
-    }
-    catch (e) {
-      console.log(e)
-    }
-  }
-  async getById(req){
-    try{
-      const id =req.params.id;
-      const user = await this.AboutModel.findOne({ creator: id }).exec();
-      if (!user) {
-        throw new NotFoundException('User was not found');
-      }
+      user.passwordHash =""
       return user
     }
     catch (e) {
@@ -69,14 +82,14 @@ export class UserService {
   }
   async getAll(){
     try{
-      const users = await this.AboutModel.find();
+      const users = await this.UserModel.find();
       if (!users) {
         throw new NotFoundException('User was not found');
       }
       const data = []
       users.map((user)=>{
         data.push({
-          creator :  user.creator,
+          id :  user._id,
           firstName: user.firstName,
           lastName: user.lastName
         })
@@ -87,4 +100,23 @@ export class UserService {
       console.log(e)
     }
   }
+  async subsribe(req, body){
+    const id = req.user.id
+    const user = await this.UserModel.findById(id).exec();
+    if(!user)
+    {
+      throw new NotFoundException('User was not found');
+    }
+    const new_fulfill = user.fulfill + body.nrDreams
+    await this.UserModel.findByIdAndUpdate(id,{subscribe: body.pack, fulfill:new_fulfill})
+    console.log(body.pack);
+    console.log(new_fulfill);
+    const respons = {
+      message: "succes",
+      id: user._id,
+    }
+    return respons
+  }
+
 }
+

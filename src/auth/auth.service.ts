@@ -7,15 +7,12 @@ import { ConfigService } from "@nestjs/config";
 import { MailService } from "../mail/mail.service";
 import { JwtService } from "@nestjs/jwt";
 import { jwtConstants } from "./constants";
-import { About } from "../schemas/about.schema";
 
 @Injectable()
 export class AuthService {
 
 	constructor(
 		@InjectModel('User') private readonly UserModel: Model<User>,
-		@InjectModel('About') private readonly AboutModel: Model<About>,
-
 		private readonly mailService: MailService,
 		private jwtService: JwtService
 	) {}
@@ -28,10 +25,10 @@ export class AuthService {
 
 		const salt = await bcrypt.genSalt(10);
 		const hash = await bcrypt.hash(body.password, salt)
-
+		console.log(hash);
 		const payload = { email: body.email, passwordHash: hash }
 		const token = await this.jwtService.signAsync(payload)
-
+		console.log(token);
 		const message:string = `Welcome to Dreamerz! To confirm the email address, click here: http://localhost:3000/confirmationEmail/${token}`
 		await this.mailService.sendUserConfirmation(body.email,"Email Confirmation", message)
 
@@ -58,17 +55,11 @@ export class AuthService {
 
 		const doc = new this.UserModel({
 			email: payload.email,
-			passwordHash: payload.hash
+			passwordHash: payload.passwordHash
 		});
 
-		user = await doc.save();
+		await doc.save();
 
-		const about = new this.AboutModel({
-			creator: user._id,
-			email: user.email,
-		});
-
-		await about.save()
 		console.log("All good");
 		res.redirect(`http://localhost:5173/success`)
 	}

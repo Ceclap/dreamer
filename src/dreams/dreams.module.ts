@@ -5,26 +5,32 @@ import { NestMinioModule } from "nestjs-minio";
 import { MongooseModule } from "@nestjs/mongoose";
 import { UserSchema } from "../schemas/user.schema";
 import { DreamSchema } from "../schemas/dream.schema";
+import { ImagesService } from "../images/images.service";
 
 @Module({
   imports: [
     NestMinioModule.register(
       {
-      endPoint: '127.0.0.1',
-      port: 9000,
-      useSSL: false,
-      accessKey: 'minioadmin',
-      secretKey: 'minioadmin',
+        endPoint: '127.0.0.1',
+        port: 9000,
+        useSSL: false,
+        accessKey: 'minioadmin',
+        secretKey: 'minioadmin',
       },
     ),
     MongooseModule.forFeature([
         {
           name:"Dream",
           schema:DreamSchema
-        }
+        },
+      {
+        name:"User",
+        schema:UserSchema
+      }
         ]),
+
 ],
   controllers: [DreamsController],
-  providers: [DreamsService]
+  providers: [DreamsService, ImagesService]
 })
 export class DreamsModule {}
