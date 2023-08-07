@@ -7,8 +7,6 @@ import { MailService } from "../mail/mail.service";
 import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { jwtConstants } from "./constants";
-import { AboutSchema } from "../schemas/about.schema";
-
 
 @Module({
   imports: [
@@ -16,10 +14,6 @@ import { AboutSchema } from "../schemas/about.schema";
       {
         name:"User",
         schema:UserSchema
-      },
-      {
-        name:"About",
-        schema:AboutSchema
       }
     ]),
     JwtModule.register({
