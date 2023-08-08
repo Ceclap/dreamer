@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Response, Post, Request, UseGuards, Query, Patch } from "@nestjs/common";
+import { Body, Controller, Get, Response, Post, Request, UseGuards, Query, Patch } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from "./dto/create-user.dto";
+import { CreateUserDto } from './dto/create-user.dto';
 @Controller()
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -11,22 +11,22 @@ export class AuthController {
 
   @Post(`sign-in`)
   async signIn(@Body() body: CreateUserDto) {
-    return this.authService.singIn(body);
+	return this.authService.singIn(body);
   }
 
   @Get('/recover')
   async recoverEmail(@Body() body:CreateUserDto){
-    return this.authService.recoverEmail(body)
+	return this.authService.recoverEmail(body);
   }
 
   @Patch('/recover')
   async recover(@Body() body:CreateUserDto){
-    return this.authService.recover(body)
+	return this.authService.recover(body);
   }
 
 
   @Get('confirmationEmail/:token')
   async confirmationEmail(@Request() req, @Response() res){
-    return this.authService.confirmationEmail(req, res);
+	return this.authService.confirmationEmail(req, res);
   }
 }

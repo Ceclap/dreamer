@@ -1,7 +1,7 @@
 version: '3'
 services:
   minio:
-    image: quay.io/minio/minio
+    image: bitnami/minio
     restart: always
     volumes:
       - minio:/data
@@ -10,7 +10,7 @@ services:
       - MINIO_SECRET_KEY=miniosecret
     ports:
       - "9000:9000"
-      - "9001:9001"    
+      - "9001:9001"
 
 volumes:
   minio:
