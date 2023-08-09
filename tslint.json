@@ -1,18 +1,12 @@
 {
   "rules": {
     "no-var-requires": true,
-    "no-any": true,
     "promise-function-async": true,
     "await-promise": true,
     "curly": true,
     "prefer-for-of": true,
     "forin": true,
-    "no-console": [
-      true,
-      "log",
-      "error"
-    ],
-    "no-debugger": true,
+     "no-debugger": true,
     "no-duplicate-super": true,
     "no-duplicate-switch-case": true,
     "no-invalid-template-strings": true,
