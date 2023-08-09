@@ -1,6 +1,6 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import * as mongoose from "mongoose";
+import * as mongoose from 'mongoose';
 
 @Schema()
 export class Dream extends Document{
@@ -11,13 +11,13 @@ export class Dream extends Document{
   description: string;
 
   @Prop({default: []})
-  image: Array<string>
+  image: Array<string>;
 
   @Prop({require: true})
-  amount: number
+  amount: number;
 
   @Prop({default: 0})
-  donated: number
+  donated: number;
 
 }
 
