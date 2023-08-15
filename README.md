@@ -11,7 +11,7 @@
 'docker stop *container hash*' to stop container
 'docker rm *container hash*' to delete container
 
-//API
+//EndPoint
 //authentication
 /sign-up(post) send a email with link and token for sing-up the user
 /confirmationEmail/token is use in previous Email and It sing-up the user and redirect user to this page http://localhost:5173/success  
@@ -28,4 +28,22 @@
 /post(Post)[need token] Create the Dream
 /dream/id(Get) Send information about Dream by Dream ID
 /dreamAll(Get) Send information about All Dreams
+//Comment
+/createComment(Post)[need token] Create Comment
+Payload
+{
+body: string
+parentId: string
+profileId: string
+}
+/modifyComment(Patch)[need token] Modify Comment
+Payload
+{
+body:string
+}
+/deleteComment(Delete)[need token] Delete Comment
+Payload
+{
+commentId:string
+}
 
