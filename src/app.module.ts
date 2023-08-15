@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { DreamsModule } from './dreams/dreams.module';
 import { ImagesModule } from './images/images.module';
 import { ChatModule } from './chat/chat.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { ChatModule } from './chat/chat.module';
 	UserModule,
 	DreamsModule,
 	ImagesModule,
-	ChatModule
+	ChatModule,
+	ProfileModule
 
   ],
   controllers: [AppController],

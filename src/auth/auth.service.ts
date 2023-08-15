@@ -28,7 +28,6 @@ export class AuthService {
 		console.log(hash);
 		const payload = { email: body.email, passwordHash: hash };
 		const token = await this.jwtService.signAsync(payload);
-		console.log(token);
 		const message:string = `Welcome to Dreamerz! To confirm the email address, click here: http://localhost:3000/confirmationEmail/${token}`;
 		await this.mailService.sendUserConfirmation(body.email,'Email Confirmation', message);
 
